@@ -1,0 +1,21 @@
+[project]
+name = "textspotting-as-a-service"
+version = "0.1.0"
+description = "TextSpotting as a Service"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "deepsolo",
+    "detectron2",
+    "dptext-detr",
+    "mapreader",
+    "maptextpipeline",
+    "timm<1.0.0",
+]
+
+[tool.uv.sources]
+mapreader = { git = "https://github.com/maps-as-data/MapReader.git" }
+detectron2 = { git = "https://github.com/facebookresearch/detectron2.git" }
+deepsolo = { git = "https://github.com/maps-as-data/DeepSolo.git" }
+dptext-detr = { git = "https://github.com/maps-as-data/DPText-DETR.git" }
+maptextpipeline = { git = "https://github.com/maps-as-data/MapTextPipeline.git" }
