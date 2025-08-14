@@ -39,14 +39,14 @@ def do_inference(image_path: Path) -> pd.DataFrame:
         from mapreader import MapTextRunner, loader
 
     logging.info("[yellow]Loading Weights...")
-    if not Path("rumsey-finetune/merged_weights.pth").exists():
+    if not Path("model/merged_weights.pth").exists():
         merged_weights = merge_detectron2_split_weights(
             [
-                "rumsey-finetune/backbone_weights.pth",
-                "rumsey-finetune/other_weights.pth",
+                "model/backbone_weights.pth",
+                "model/other_weights.pth",
             ]
         )
-        torch.save(merged_weights, "rumsey-finetune/merged_weights.pth")
+        torch.save(merged_weights, "model/merged_weights.pth")
 
     logging.info("[yellow]Loading Image...")
     input_files = loader(str(image_path))
@@ -68,8 +68,8 @@ def do_inference(image_path: Path) -> pd.DataFrame:
         runner = MapTextRunner(
             patch_df,
             parent_df,
-            cfg_file="rumsey-finetune/final_rumsey.yaml",
-            weights_file="rumsey-finetune/merged_weights.pth",
+            cfg_file="model/detectron2_config.yaml",
+            weights_file="model/merged_weights.pth",
             device="cuda",
         )
     runner.run_all(return_dataframe=True)

@@ -14,5 +14,5 @@ wheels/
 .vscode
 
 # local cache
-rumsey-finetune/merged_weights.pth
+model/merged_weights.pth
 patch_cache
