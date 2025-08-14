@@ -22,3 +22,9 @@ deepsolo = { git = "https://github.com/maps-as-data/DeepSolo.git" }
 dptext-detr = { git = "https://github.com/maps-as-data/DPText-DETR.git" }
 maptextpipeline = { git = "https://github.com/maps-as-data/MapTextPipeline.git" }
 
+[tool.uv.extra-build-dependencies]
+mapreader = [{ requirement = "torch", match-runtime = true }]
+maptextpipeline = [{ requirement = "torch", match-runtime = true }]
+dptext-detr = [{ requirement = "torch", match-runtime = true }]
+deepsolo = [{ requirement = "torch", match-runtime = true }]
+detectron2 = [{ requirement = "torch", match-runtime = true }]
