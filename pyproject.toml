@@ -1,7 +1,7 @@
 [project]
-name = "textspotting-as-a-service"
+name = "text-spotting-as-a-service"
 version = "0.1.0"
-description = "TextSpotting as a Service"
+description = "Text-Spotting as a Service"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
@@ -21,3 +21,4 @@ detectron2 = { git = "https://github.com/facebookresearch/detectron2.git" }
 deepsolo = { git = "https://github.com/maps-as-data/DeepSolo.git" }
 dptext-detr = { git = "https://github.com/maps-as-data/DPText-DETR.git" }
 maptextpipeline = { git = "https://github.com/maps-as-data/MapTextPipeline.git" }
+
