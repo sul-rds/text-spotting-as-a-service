@@ -12,3 +12,7 @@ wheels/
 # dev/tooling
 .ipynb_checkpoints
 .vscode
+
+# local cache
+rumsey-finetune/merged_weights.pth
+patch_cache
