@@ -4,12 +4,12 @@ COPY --from=docker.io/astral/uv:latest /uv /uvx /bin/
 LABEL author="Simon Wiles <simon.wiles@stanford.edu>"
 ENV PYTHONUNBUFFERED=1
 
-WORKDIR /opt/textspotting-as-a-service
-COPY . /opt/textspotting-as-a-service
+WORKDIR /opt/text-spotting-as-a-service
+COPY . /opt/texts-potting-as-a-service
 
 RUN apt-get update \                                                        
   && apt-get upgrade -y \                                                    
-  && apt-get install -y --no-install-recommends git-core g++ \
+  && apt-get install -y --no-install-recommends git-core g++ libgl1 \
   && rm -rf /var/lib/apt/lists/*                     
 
 RUN uv venv && uv pip install setuptools torch && uv sync --no-build-isolation

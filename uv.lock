@@ -3374,7 +3374,7 @@ wheels = [
 ]
 
 [[package]]
-name = "textspotting-as-a-service"
+name = "text-spotting-as-a-service"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
