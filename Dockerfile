@@ -9,7 +9,7 @@ COPY . /opt/text-spotting-as-a-service
 
 RUN apt-get update \                                                        
   && apt-get upgrade -y \                                                    
-  && apt-get install -y --no-install-recommends git-core g++ libgl1 \
+  && apt-get install -y --no-install-recommends git-core g++ libgl1 libglib2.0-0 \
   && rm -rf /var/lib/apt/lists/*                     
 
 RUN uv sync
