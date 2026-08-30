@@ -34,19 +34,23 @@ def do_inference(image_path: Path) -> pd.DataFrame:
         torch.save(merged_weights, "model/merged_weights.pth")
 
     logger.info("[yellow]Loading Image...")
-    input_files = loader(str(image_path))
+    input_file = loader(str(image_path))
+
+    input_fn = image_path.name
+
+    is_geotiff = "crs" in input_file.images["parent"][input_fn]
 
     logger.info("[yellow]Creating Patches...")
     patch_cache_path = Path("patch_cache") / image_path.name
     patch_cache_path.mkdir(parents=True, exist_ok=True)
     with capture_stdout() as _get_value:
         # note: the overlap argument appears to be incorrectly typed
-        input_files.patchify_all(
+        input_file.patchify_all(
             patch_size=1024,
             overlap=0.2,  # type: ignore
             path_save=str(patch_cache_path),
         )
-    parent_df, patch_df = input_files.convert_images()
+    parent_df, patch_df = input_file.convert_images()
 
     logger.info("[yellow]Spotting Text...")
     with capture_stdout() as _get_value:
@@ -66,5 +70,8 @@ def do_inference(image_path: Path) -> pd.DataFrame:
             return_dataframe=True, deduplicate=True, min_ioa=0.7
         ),
     )
+
+    if is_geotiff:
+        predictions_df = runner.convert_to_coords(return_dataframe=True)
 
     return predictions_df
