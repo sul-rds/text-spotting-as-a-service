@@ -69,6 +69,10 @@ def spot_cli(
         # Geo coordinates are available; find rectified midpoints and centroids
         gdf_utm = predictions_df.estimate_utm_crs()
         map_crs = str(predictions_df["crs"].values[0])
+   
+        # Might as well call a (georeferenced) spade a spade
+        if output_dir is not None:
+            json_out_path = output_dir / Path(image_name).with_suffix(".geojson")
 
         def get_projected_geometry_middle(
             geom: shapely.LineString | shapely.Polygon,
