@@ -59,9 +59,6 @@ def spot_cli(
         raise typer.Exit(code=1)
 
     image_name = image_path.name
-    if output_dir is not None:
-        json_out_path = output_dir / Path(image_name).with_suffix(".json")
-        csv_out_path = output_dir / Path(image_name).with_suffix(".csv")
 
     predictions_df = do_inference(image_path)
 
@@ -138,12 +135,26 @@ def spot_cli(
             "polygon_centroid"
         ].apply(lambda point: point.y)
 
-        if output_dir is None:
-            # If stdout, it's part of a pipeline, and only JSON is needed
-            predictions_df.T.to_json(sys.stdout, default_handler=str, indent=2)
-        else:
-            logging.info(f"[yellow]Saving JSON and CSV to {output_dir}...")
-            output_dir.mkdir(parents=True, exist_ok=True)
+    else:
+        # Only pixel coordinates are available
+        predictions_df["pixel_line_midpoint"] = predictions_df["pixel_line"].apply(
+            lambda l: l.interpolate(0.5, normalized=True)
+        )
+        predictions_df["pixel_polygon_centroid"] = predictions_df[
+            "pixel_geometry"
+        ].apply(lambda g: g.centroid)
+
+    if output_dir is None:
+        # If stdout, it's part of a pipeline, and only JSON is needed
+        predictions_df.T.to_json(sys.stdout, default_handler=str, indent=2)
+    else:
+        logging.info(f"[yellow]Saving JSON and CSV to {output_dir}...")
+        output_dir.mkdir(parents=True, exist_ok=True)
+
+        json_out_path = output_dir / Path(image_name).with_suffix(".json")
+        csv_out_path = output_dir / Path(image_name).with_suffix(".csv")
+
+        if "crs" in predictions_df:
             # Output GeoJSON first
             # Ensure that these values remain in the GeoJSON output as non-geometries
             predictions_df["line_midpoint"] = gpd.GeoSeries(
@@ -159,20 +170,7 @@ def spot_cli(
             )
             predictions_df.to_csv(csv_out_path)
 
-    else:
-        # Only pixel coordinates are available
-        predictions_df["pixel_line_midpoint"] = predictions_df["pixel_line"].apply(
-            lambda l: l.interpolate(0.5, normalized=True)
-        )
-        predictions_df["pixel_polygon_centroid"] = predictions_df[
-            "pixel_geometry"
-        ].apply(lambda g: g.centroid)
-
-        if output_dir is None:
-            predictions_df.T.to_json(sys.stdout, default_handler=str, indent=2)
         else:
-            logging.info(f"[yellow]Saving JSON and CSV to {output_dir}...")
-            output_dir.mkdir(parents=True, exist_ok=True)
             predictions_df.T.to_json(json_out_path, default_handler=str, indent=2)
             predictions_df.to_csv(csv_out_path)
 
