@@ -12,6 +12,7 @@ __version__ = "0.1"
 import logging
 import sys
 from pathlib import Path
+from typing import Annotated
 
 import geopandas as gpd
 import shapely
@@ -27,15 +28,16 @@ cli = typer.Typer(add_completion=False, no_args_is_help=True)
 @cli.callback(invoke_without_command=True)
 def spot_cli(
     ctx: typer.Context,
-    image_path: Path = typer.Argument(
-        ..., help="Path to the image", show_default=False
-    ),
-    output_dir: Path = typer.Argument(
-        None, help="Output folder (defaults to stdout)", show_default=False
-    ),
-    verbose: bool = typer.Option(False, "--verbose", "-v"),
-    quiet: bool = typer.Option(False, "--quiet", "-q"),
-    version: bool = typer.Option(False, "--version"),
+    image_path: Annotated[
+        Path, typer.Argument(help="Path to the image", show_default=False)
+    ],
+    output_dir: Annotated[
+        Path | None,
+        typer.Argument(help="Output folder (defaults to stdout)", show_default=False),
+    ] = None,
+    verbose: Annotated[bool, typer.Option("--verbose", "-v")] = False,
+    quiet: Annotated[bool, typer.Option("--quiet", "-q")] = False,
+    version: Annotated[bool, typer.Option("--version")] = False,
 ):
     if version:
         print(__version__)
@@ -66,7 +68,7 @@ def spot_cli(
         # Geo coordinates are available; find rectified midpoints and centroids
         gdf_utm = predictions_df.estimate_utm_crs()
         map_crs = str(predictions_df["crs"].values[0])
-   
+
         # Might as well call a (georeferenced) spade a spade
         if output_dir is not None:
             json_out_path = output_dir / Path(image_name).with_suffix(".geojson")
